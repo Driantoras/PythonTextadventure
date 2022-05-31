@@ -1,6 +1,6 @@
 from utilities import *
 
-ICON_COMPLETED = f'{GREEN}{BOLD}✓{NORMAL}'
+ICON_COMPLETED = f'{GREEN}{BOLD}X{NORMAL}'
 ICON_OPEN = f'{YELLOW}{BOLD}?{NORMAL}'
 
 

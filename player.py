@@ -46,7 +46,7 @@ class Player:
     def exp(self, value):
         self._exp = value
         while self.exp >= self.exp_max:
-            print(f'Level: {BOLD}{self.level}{NORMAL} 🠲 {GREEN}{BOLD}{self.level + 1}{NORMAL}')
+            print(f'Level: {BOLD}{self.level}{NORMAL} -> {GREEN}{BOLD}{self.level + 1}{NORMAL}')
             self._exp -= self.exp_max
             self.level += 1
             self.exp_max = int(round(100 * (1.2 ** (self.level - 1)), -1))
@@ -197,14 +197,14 @@ class Player:
                 continue
             for j in i.crafting['req']:
                 for k in self.inventory:
-                    if j[0].name == k.name:
+                    if isinstance(k, j[0]):
                         visible_list.append(i)
                         break
 
         for i, crafting_result in enumerate(visible_list):
             print(f'{i + 1}| {UNDERLINED}{BOLD}{crafting_result.name}{NORMAL}')
             for j in crafting_result.crafting['req']:
-                print(f'   ⮡ {j[1]}x {j[0].name}')
+                print(f'   - {j[1]}x {j[0].name}')
             print()
 
         choice = input_plus(f'Was willst du herstellen?\n{ENTER_LINE}')
@@ -214,10 +214,13 @@ class Player:
 
     def craft_item(self, crafting_result):
         requirements = crafting_result.crafting['req']
-        in_inventory = True
+        in_inventory = False
         for component in requirements:
-            if self.inventory[component[0]] < component[1]:
-                in_inventory = False
+            for i in self.inventory:
+                if not isinstance(i, component[0]):
+                    continue
+                if self.inventory[i] >= component[1]:
+                    in_inventory = True
 
         if not in_inventory:
             print(f'Dafür brauchst du:')
@@ -227,8 +230,8 @@ class Player:
 
         for component in requirements:
             for n in range(component[1]):
-                self.inventory.remove(component[0])
-        self.inventory.add(crafting_result)
+                self.inventory.remove(component[0]())
+        self.inventory.add(crafting_result())
         print(f'Du hast {crafting_result.name} hergestellt')
 
     def fight_enemy(self, enemy):
@@ -262,7 +265,7 @@ class Player:
             if not enemy.hp <= 0:
                 self.get_attacked(enemy)
 
-        print(f'{RED}✖{NORMAL} {BOLD}{strong_enemy}{enemy.name}{NORMAL} ist gestorben\n')
+        print(f'{BOLD}{strong_enemy}{enemy.name}{NORMAL} ist gestorben\n')
         self.receive_exp(enemy.ep_drop)
         self.add_gold(enemy.gold_drop)
         self.pickup_loot(enemy.loot_drop)

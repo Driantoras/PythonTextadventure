@@ -9,11 +9,10 @@ class Inventory(Counter):
 
         if item.stackable:
             for i in self:
-                if i.name == item.name:
+                if type(i) == type(item):
                     self[i] += 1
                     return
-            else:
-                self[item] += 1
+            self[item] += 1
 
         elif not item.stackable:
             self[item] = 1
@@ -21,9 +20,12 @@ class Inventory(Counter):
     def remove(self, item):
 
         if item.stackable:
-            self[item] -= 1
-            if self[item] == 0:
-                del self[item]
+            for i in self:
+                if type(i) == type(item):
+                    self[i] -= 1
+                    if self[i] == 0:
+                        del self[i]
+                    return
 
         elif not item.stackable:
             del self[item]
