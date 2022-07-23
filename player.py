@@ -33,7 +33,6 @@ class Player:
         if value > self.hp_max:
             self._hp = self.hp_max
         elif value <= 0:
-            print(f'{RED}{BOLD}Du bist gestorben{NORMAL}')
             self.alive = False
         else:
             self._hp = value

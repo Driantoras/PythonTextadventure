@@ -65,6 +65,8 @@ def game_loop():
             position = temp
             current_location = location[position]
 
+    print(f'{RED}{BOLD}Du bist gestorben{NORMAL}')
+
 
 def save_game():
     # prevent variable being permanent false
